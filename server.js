@@ -52,16 +52,17 @@ app.get('/api/hello', function(_req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-const link_re = /^https?:\/\/(\w+\.)+\w+.*$/i;
+const url_re = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
 function new_url(req, res) {
   let url = req.body.url;
-  if (link_re.test(url)) {
+  if (url_re.test(url)) {
     createAndSaveUrl(url).then(data => {
-        res.json({original_url: url, short_url: data.short_url});
-      }, err => {
-        console.log(err);
-        res.json({error: err});
-      });
+      const response = {original_url: url, short_url: data.short_url};
+      res.json(response);
+    }, err => {
+      console.log(err);
+      res.json({error: err});
+    });
   } else {
     res.json({error: "invalid url"});
   }
