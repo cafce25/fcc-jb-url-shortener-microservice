@@ -53,7 +53,7 @@ app.get('/api/hello', function(_req, res) {
 });
 
 const link_re = /^https?:\/\/(\w+\.)+\w+.*$/i;
-app.post('/api/shorturl/new', function(req, res) {
+function new_url(req, res) {
   let url = req.body.url;
   if (link_re.test(url)) {
     createAndSaveUrl(url).then(data => {
@@ -65,7 +65,9 @@ app.post('/api/shorturl/new', function(req, res) {
   } else {
     res.json({error: "invalid url"});
   }
-});
+}
+app.post('/api/shorturl', new_url);
+app.post('/api/shorturl/new', new_url);
 
 app.get('/api/shorturl/:short_url', function(req, res) {
   findUrlByShort(req.params.short_url).then((url) => {
